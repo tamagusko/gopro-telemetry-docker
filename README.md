@@ -4,7 +4,7 @@ This project provides a Docker-based tool to extract telemetry data (GPS, Accele
 
 ## Requirements
 
-- Docker [https://www.docker.com/get-started/](installation instructions)
+- Docker ([installation instructions](https://www.docker.com/get-started/))
 - GoPro video files in `.mp4` format
 
 ## Folder Structure
