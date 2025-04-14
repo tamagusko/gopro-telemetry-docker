@@ -53,4 +53,4 @@ For a file named `GX010001_PhoenixPark.mp4`, you will get:
 output/GX010001_PhoenixPark.json
 ```
 
-The JSON contains telemetry streams such as `GPS5`, `ACCL`, and `GYRO`.
+The JSON contains telemetry streams such as `GPS9`, `ACCL`, and `GYRO`.
