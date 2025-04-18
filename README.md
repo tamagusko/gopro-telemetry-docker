@@ -34,13 +34,19 @@ Place your `.mp4` video files into the `input/` folder.
 docker build -t gopro-telemetry .
 ```
 
-## Run the Extraction
+## Run the Extraction on MacOS/Linux
 
 ```
 docker run --rm \
   -v "$PWD/input":/data/input \
   -v "$PWD/output":/data/output \
   gopro-telemetry
+```
+
+### On Windows (PowerShell)
+
+```
+docker run --rm -v "${PWD}\input:/data/input" -v "${PWD}\output:/data/output" gopro-telemetry
 ```
 
 This command will process all `.mp4` files inside the `input/` folder and generate one `.json` file per video inside the `output/` folder.
