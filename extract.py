@@ -15,7 +15,7 @@ if __name__ == "__main__":
     output_dir = "/data/output"
 
     for filename in os.listdir(input_dir):
-        if filename.endswith(".mp4"):
+        if filename.lower().endswith(".mp4"):
             in_path = os.path.join(input_dir, filename)
             base_name = os.path.splitext(filename)[0]
             out_path = os.path.join(output_dir, base_name + ".json")
