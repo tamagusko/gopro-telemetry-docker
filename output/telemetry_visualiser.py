@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 video_name = "GX010018_vid3"
 
-# Charger les données
+# Load data
 with open(f"C:/Users/titou/sdl-colourways-cli/gopro-telemetry-docker/output/{video_name}.json", "r") as f:
     data = json.load(f)
 
@@ -15,14 +15,13 @@ gyro_data = np.array(data["GYRO"]["data"])
 gps_timestamps = data["GPS9"]["timestamps_s"]
 gps_data = data["GPS9"]["data"]
 
-# Séparer les composantes
 acc_x, acc_y, acc_z = acc_data.T
 gyro_x, gyro_y, gyro_z = gyro_data.T
 
-# Nettoyer l'altitude
+# Avoid altitude bugs
 altitudes = [entry[2] if isinstance(entry, list) and len(entry) >= 3 and entry[2] < 8000 else 0 for entry in gps_data]
 
-# Moyennes absolues
+# Means
 mean_acc_x = np.mean(np.abs(acc_x))
 mean_acc_y = np.mean(np.abs(acc_y))
 mean_acc_z = np.mean(np.abs(acc_z))
@@ -30,12 +29,12 @@ mean_gyro_x = np.mean(np.abs(gyro_x))
 mean_gyro_y = np.mean(np.abs(gyro_y))
 mean_gyro_z = np.mean(np.abs(gyro_z))
 
-# Seuils dynamiques et absolus
+# Dynamic thresholds
 acc_threshold = 10.0
 gyro_threshold = 2.0
-window_size = 0.5  # secondes autour du pic
+window_size = 0.5  # seconds
 
-# Seuils absolus (anti-bruit)
+# Absolute thresholds
 abs_min_acc_x = 35
 abs_min_acc_z = 35
 abs_min_acc_y = 5
@@ -86,10 +85,10 @@ def detect_event_windows():
 
     return heavy_braking, bumping, avoidance, stop
 
-# Détection des événements
+# Detect events
 heavy_braking_events, bumping_events, avoidance_events, stop_event = detect_event_windows()
 
-# DÉTECTION DES PEAKS POUR AFFICHAGE DES CROIX
+# Peak detection for the X
 acc_x_peaks_idx = np.where(acc_x < -abs_min_acc_x)[0]
 acc_z_peaks_idx = np.where(acc_z > abs_min_acc_z)[0]
 acc_y_peaks_idx = np.where(np.abs(acc_y) > abs_min_acc_y)[0]
@@ -105,11 +104,6 @@ plt.subplot(3, 1, 1)
 plt.plot(acc_timestamps, acc_x, label="Acc X", color='r')
 plt.plot(acc_timestamps, acc_y, label="Acc Y", color='g')
 plt.plot(acc_timestamps, acc_z, label="Acc Z", color='b')
-
-# Crois sur les pics
-#plt.scatter(acc_timestamps[acc_x_peaks_idx], acc_x[acc_x_peaks_idx], color='black', marker='x', s=100, label="Acc X peak")
-#plt.scatter(acc_timestamps[acc_z_peaks_idx], acc_z[acc_z_peaks_idx], color='blue', marker='x', s=100, label="Acc Z peak")
-#plt.scatter(acc_timestamps[acc_y_peaks_idx], acc_y[acc_y_peaks_idx], color='green', marker='x', s=100, label="Acc Y peak")
 
 # Rectangles
 for start, end in heavy_braking_events:
@@ -134,11 +128,6 @@ plt.subplot(3, 1, 2)
 plt.plot(gyro_timestamps, gyro_x, label="Gyro X", color='orange')
 plt.plot(gyro_timestamps, gyro_y, label="Gyro Y", color='purple')
 plt.plot(gyro_timestamps, gyro_z, label="Gyro Z", color='cyan')
-
-# Crois
-#plt.scatter(gyro_timestamps[gyro_y_peaks_idx], gyro_y[gyro_y_peaks_idx], color='purple', marker='x', s=100, label="Gyro Y peak")
-#plt.scatter(gyro_timestamps[gyro_x_peaks_idx], gyro_x[gyro_x_peaks_idx], color='orange', marker='x', s=100, label="Gyro X peak")
-#plt.scatter(gyro_timestamps[gyro_z_peaks_idx], gyro_z[gyro_z_peaks_idx], color='cyan', marker='x', s=100, label="Gyro Z peak")
 
 # Rectangles
 for start, end in heavy_braking_events:
